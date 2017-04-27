@@ -5,6 +5,8 @@
 #include <QDebug>
 #include <QJsonParseError>
 #include <QJsonDocument>
+#include <QPushButton>
+#include <QApplication>
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -12,7 +14,16 @@ MainWindow::MainWindow(QWidget *parent)
 {
     setFixedSize(800, 600);
     QWidget * widget = new QWidget(this);
+    this->setCentralWidget(widget);
+
     HoDoubleSpinBox * spin = new HoDoubleSpinBox(widget);
+    spin->setGeometry(100, 100, 50, 20);
+
+    QPushButton * quitBtn = new QPushButton("Quit", widget);
+    quitBtn->setGeometry(QRect(100, 130, 50, 20));
+    QObject::connect(quitBtn, &QPushButton::clicked, [](bool b){
+        qDebug() << "you clicked me " << b; // b is false
+    });
 
     HoProperty pro;
     pro.setProperty("name", "Asran");

@@ -13,6 +13,9 @@ signals:
 
 public slots:
 
+protected:
+    virtual void mousePressEvent(QMouseEvent * event);
+
 private:
     bool eventFilter(QObject *watched, QEvent *event);
 };
