@@ -14,6 +14,11 @@ public:
 
     void paintEvent(QPaintEvent *event);
 
+signals:
+    void done(const QString param);
+
+private slots:
+
 };
 
 #endif // PAINTWIDGET_H
