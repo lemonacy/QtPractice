@@ -9,12 +9,17 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     tcpServer(nullptr),
-    udpReceiver(nullptr)
+    udpReceiver(nullptr),
+    udpSender(nullptr)
 {
     ui->setupUi(this);
     ui->m_startTCPServer->setDisabled(false);
     ui->m_stopTCPServer->setDisabled(true);
     ui->m_unbindUdp->setDisabled(true);
+
+    connect(ui->m_clearConsole, static_cast<void (QPushButton::*)(bool)>(&QPushButton::clicked), [this]{
+        ui->m_console->clear();
+    });
 
     connect(ui->m_startTCPServer, static_cast<void (QPushButton::*)(bool)>(&QPushButton::clicked), this, &MainWindow::startTCPServer);
     connect(ui->m_stopTCPServer, static_cast<void (QPushButton::*)(bool)>(&QPushButton::clicked), this, &MainWindow::stopTCPServer);
@@ -27,6 +32,9 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+
+    if (udpSender)
+        delete udpSender;
 }
 
 void MainWindow::startTCPServer()
@@ -75,8 +83,14 @@ void MainWindow::bindUdp()
     ui->m_unbindUdp->setDisabled(false);
 
     connect(udpReceiver, &QUdpSocket::readyRead, [this]{
-        QString msg = udpReceiver->readAll();
-        ui->m_console->append(QString("Received [%1] from %2:%3").arg(msg).arg(udpReceiver->localAddress().toString()).arg(udpReceiver->localPort()));
+        while(udpReceiver->hasPendingDatagrams()) {
+            QByteArray datagram;
+            QHostAddress remoteAddress;
+            quint16 remotePort;
+            datagram.resize(udpReceiver->pendingDatagramSize());
+            udpReceiver->readDatagram(datagram.data(), datagram.size(), &remoteAddress, &remotePort);
+            ui->m_console->append(QString("Received [%1] from %2:%3").arg(QString(datagram)).arg(remoteAddress.toString()).arg(remotePort));
+        }
     });
 }
 
@@ -93,11 +107,16 @@ void MainWindow::unbindUdp()
 
 void MainWindow::sendUdpMessage()
 {
-    QUdpSocket sender;
+    if(udpSender == nullptr)
+    {
+        udpSender = new QUdpSocket(this);
+    }
+
     QString msg = ui->m_udpMessage->text();
     QString address = ui->m_udpRemoteAddress->text();
     quint16 port = ui->m_udpRemotePort->text().toInt();
 
-    sender.writeDatagram(msg.toUtf8(), QHostAddress(address), port);
+    udpSender->writeDatagram(msg.toUtf8(), QHostAddress(address), port);
+    udpSender->flush();
     ui->m_console->append(QString("Send [%1] to %2:%3").arg(msg).arg(address).arg(port));
 }
