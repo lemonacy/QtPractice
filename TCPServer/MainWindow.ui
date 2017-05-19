@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>TCP/UDP Tester</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <property name="sizePolicy">
@@ -54,7 +54,7 @@
          </size>
         </property>
         <property name="text">
-         <string>10.20.72.124</string>
+         <string/>
         </property>
        </widget>
       </item>
@@ -73,7 +73,7 @@
          </size>
         </property>
         <property name="text">
-         <string>56667</string>
+         <string>30000</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -103,6 +103,67 @@
      </layout>
     </item>
     <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_5">
+      <item>
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Connect to TCP</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="m_tcpServerAddress">
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="m_tcpServerPort">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>50</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>30000</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="m_tcpConnect">
+        <property name="text">
+         <string>Connect</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="m_tcpClientMsg">
+        <property name="placeholderText">
+         <string>say hi to tcp server</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="m_tcpSendMsg">
+        <property name="text">
+         <string>Send</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
        <widget class="QPushButton" name="m_bindUdp">
@@ -126,7 +187,7 @@
          </size>
         </property>
         <property name="text">
-         <string>10.20.72.124</string>
+         <string/>
         </property>
        </widget>
       </item>
@@ -145,7 +206,7 @@
          </size>
         </property>
         <property name="text">
-         <string>56667</string>
+         <string>40000</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -198,7 +259,7 @@
          </size>
         </property>
         <property name="text">
-         <string>10.20.72.124</string>
+         <string/>
         </property>
        </widget>
       </item>
@@ -217,7 +278,7 @@
          </size>
         </property>
         <property name="text">
-         <string>56667</string>
+         <string>40000</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
