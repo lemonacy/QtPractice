@@ -9,8 +9,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     tcpServer(nullptr),
-    udpReceiver(nullptr),
-    udpSender(nullptr)
+    udpSocket(nullptr)
 {
     ui->setupUi(this);
     ui->m_startTCPServer->setDisabled(false);
@@ -33,14 +32,14 @@ MainWindow::~MainWindow()
 {
     delete ui;
 
-    if (udpSender)
-        delete udpSender;
+    if (udpSocket)
+        delete udpSocket;
 }
 
 void MainWindow::startTCPServer()
 {
-    QString address("10.20.72.124");
-    quint16 port = 56666;
+    QString address = ui->m_tcpInterface->text();
+    quint16 port = ui->m_tcpPort->text().toInt();
     tcpServer = new QTcpServer();
     tcpServer->listen(QHostAddress(address), port);
     ui->m_startTCPServer->setDisabled(true);
@@ -68,7 +67,7 @@ void MainWindow::stopTCPServer()
         delete tcpServer;
         tcpServer = nullptr;
 
-        ui->m_console->append(QString("TCP Sever stopped\n"));
+        ui->m_console->append(QString("TCP Sever stopped"));
         ui->m_startTCPServer->setDisabled(false);
         ui->m_stopTCPServer->setDisabled(true);
     }
@@ -76,19 +75,19 @@ void MainWindow::stopTCPServer()
 
 void MainWindow::bindUdp()
 {
-    udpReceiver = new QUdpSocket();
-    udpReceiver->bind(QHostAddress(ui->m_udpAddress->text()), ui->m_udpPort->text().toInt());
+    udpSocket = new QUdpSocket();
+    udpSocket->bind(QHostAddress(ui->m_udpAddress->text()), ui->m_udpPort->text().toInt());
     ui->m_console->append(QString("Bind UDP receiver at %1:%2").arg(ui->m_udpAddress->text()).arg(ui->m_udpPort->text().toInt()));
     ui->m_bindUdp->setDisabled(true);
     ui->m_unbindUdp->setDisabled(false);
 
-    connect(udpReceiver, &QUdpSocket::readyRead, [this]{
-        while(udpReceiver->hasPendingDatagrams()) {
+    connect(udpSocket, &QUdpSocket::readyRead, [this]{
+        while(udpSocket->hasPendingDatagrams()) {
             QByteArray datagram;
             QHostAddress remoteAddress;
             quint16 remotePort;
-            datagram.resize(udpReceiver->pendingDatagramSize());
-            udpReceiver->readDatagram(datagram.data(), datagram.size(), &remoteAddress, &remotePort);
+            datagram.resize(udpSocket->pendingDatagramSize());
+            udpSocket->readDatagram(datagram.data(), datagram.size(), &remoteAddress, &remotePort);
             ui->m_console->append(QString("Received [%1] from %2:%3").arg(QString(datagram)).arg(remoteAddress.toString()).arg(remotePort));
         }
     });
@@ -96,27 +95,22 @@ void MainWindow::bindUdp()
 
 void MainWindow::unbindUdp()
 {
-    if(udpReceiver)
+    if(udpSocket)
     {
-        udpReceiver->close();
-        delete udpReceiver;
-        udpReceiver = nullptr;
+        udpSocket->close();
+        delete udpSocket;
+        udpSocket = nullptr;
         ui->m_bindUdp->setDisabled(false);
     }
 }
 
 void MainWindow::sendUdpMessage()
 {
-    if(udpSender == nullptr)
-    {
-        udpSender = new QUdpSocket(this);
-    }
-
     QString msg = ui->m_udpMessage->text();
     QString address = ui->m_udpRemoteAddress->text();
     quint16 port = ui->m_udpRemotePort->text().toInt();
 
-    udpSender->writeDatagram(msg.toUtf8(), QHostAddress(address), port);
-    udpSender->flush();
+    udpSocket->writeDatagram(msg.toUtf8(), QHostAddress(address), port);
+    udpSocket->flush();
     ui->m_console->append(QString("Send [%1] to %2:%3").arg(msg).arg(address).arg(port));
 }

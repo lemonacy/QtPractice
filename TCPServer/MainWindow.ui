@@ -37,7 +37,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="m_udpAddress_2">
+       <widget class="QLineEdit" name="m_tcpInterface">
         <property name="enabled">
          <bool>true</bool>
         </property>
@@ -59,7 +59,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="m_udpPort_2">
+       <widget class="QLineEdit" name="m_tcpPort">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
           <horstretch>0</horstretch>

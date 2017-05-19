@@ -19,8 +19,7 @@ public:
 private:
     Ui::MainWindow *ui;
     QTcpServer *tcpServer;
-    QUdpSocket *udpReceiver;
-    QUdpSocket *udpSender;
+    QUdpSocket *udpSocket;
 
 private slots:
     void startTCPServer();
